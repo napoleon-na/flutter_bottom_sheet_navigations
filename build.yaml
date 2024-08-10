@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      go_router_builder:
+        generate_for:
+          include:
+            - lib/routes.dart
