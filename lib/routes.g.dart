@@ -9,6 +9,7 @@ part of 'routes.dart';
 List<RouteBase> get $appRoutes => [
       $homeRoute,
       $bottomSheetTopRoute,
+      $myShellRouteData,
     ];
 
 RouteBase get $homeRoute => GoRouteData.$route(
@@ -115,6 +116,64 @@ extension $NextRouteExtension on NextRoute {
 
   String get location => GoRouteData.$location(
         '/bottom-sheet-top/next',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $myShellRouteData => ShellRouteData.$route(
+      navigatorKey: MyShellRouteData.$navigatorKey,
+      factory: $MyShellRouteDataExtension._fromState,
+      routes: [
+        GoRouteData.$route(
+          path: '/shell-bottom-sheet-home',
+          factory: $ShellContentTopRouteExtension._fromState,
+          routes: [
+            GoRouteData.$route(
+              path: 'shell-next',
+              factory: $ShellContentNextRouteExtension._fromState,
+            ),
+          ],
+        ),
+      ],
+    );
+
+extension $MyShellRouteDataExtension on MyShellRouteData {
+  static MyShellRouteData _fromState(GoRouterState state) =>
+      const MyShellRouteData();
+}
+
+extension $ShellContentTopRouteExtension on ShellContentTopRoute {
+  static ShellContentTopRoute _fromState(GoRouterState state) =>
+      const ShellContentTopRoute();
+
+  String get location => GoRouteData.$location(
+        '/shell-bottom-sheet-home',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ShellContentNextRouteExtension on ShellContentNextRoute {
+  static ShellContentNextRoute _fromState(GoRouterState state) =>
+      const ShellContentNextRoute();
+
+  String get location => GoRouteData.$location(
+        '/shell-bottom-sheet-home/shell-next',
       );
 
   void go(BuildContext context) => context.go(location);

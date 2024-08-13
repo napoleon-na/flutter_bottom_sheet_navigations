@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class BottomSheetPage<T> extends Page<T> {
   const BottomSheetPage({
     required this.child,
-    this.capturedThemes,
     this.barrierLabel,
     this.barrierOnTapHint,
     this.backgroundColor,
@@ -13,6 +12,7 @@ class BottomSheetPage<T> extends Page<T> {
     this.constraints,
     this.modalBarrierColor,
     this.isDismissible = true,
+    this.useRootNavigator = true,
     this.enableDrag = true,
     this.showDragHandle,
     this.isScrollControlled = false,
@@ -25,8 +25,6 @@ class BottomSheetPage<T> extends Page<T> {
   });
 
   final Widget child;
-
-  final CapturedThemes? capturedThemes;
 
   final String? barrierLabel;
 
@@ -46,6 +44,8 @@ class BottomSheetPage<T> extends Page<T> {
 
   final bool isDismissible;
 
+  final bool useRootNavigator;
+
   final bool enableDrag;
 
   final bool? showDragHandle;
@@ -63,28 +63,33 @@ class BottomSheetPage<T> extends Page<T> {
   final AnimationStyle? sheetAnimationStyle;
 
   @override
-  Route<T> createRoute(BuildContext context) => ModalBottomSheetRoute<T>(
-        builder: (BuildContext context) =>
-            (ModalRoute.of(context)?.settings as BottomSheetPage).child,
-        capturedThemes: capturedThemes,
-        barrierLabel: barrierLabel,
-        barrierOnTapHint: barrierOnTapHint,
-        backgroundColor: backgroundColor,
-        elevation: elevation,
-        shape: shape,
-        clipBehavior: clipBehavior,
-        constraints: constraints,
-        modalBarrierColor: modalBarrierColor,
-        isDismissible: isDismissible,
-        enableDrag: enableDrag,
-        showDragHandle: showDragHandle,
-        isScrollControlled: isScrollControlled,
-        scrollControlDisabledMaxHeightRatio:
-            scrollControlDisabledMaxHeightRatio,
-        settings: this,
-        transitionAnimationController: transitionAnimationController,
-        anchorPoint: anchorPoint,
-        useSafeArea: useSafeArea,
-        sheetAnimationStyle: sheetAnimationStyle,
-      );
+  Route<T> createRoute(BuildContext context) {
+    final NavigatorState navigator =
+        Navigator.of(context, rootNavigator: useRootNavigator);
+
+    return ModalBottomSheetRoute<T>(
+      builder: (BuildContext context) =>
+          (ModalRoute.of(context)?.settings as BottomSheetPage).child,
+      capturedThemes:
+          InheritedTheme.capture(from: context, to: navigator.context),
+      barrierLabel: barrierLabel,
+      barrierOnTapHint: barrierOnTapHint,
+      backgroundColor: backgroundColor,
+      elevation: elevation,
+      shape: shape,
+      clipBehavior: clipBehavior,
+      constraints: constraints,
+      modalBarrierColor: modalBarrierColor,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      showDragHandle: showDragHandle,
+      isScrollControlled: isScrollControlled,
+      scrollControlDisabledMaxHeightRatio: scrollControlDisabledMaxHeightRatio,
+      settings: this,
+      transitionAnimationController: transitionAnimationController,
+      anchorPoint: anchorPoint,
+      useSafeArea: useSafeArea,
+      sheetAnimationStyle: sheetAnimationStyle,
+    );
+  }
 }
